@@ -47,10 +47,12 @@ void Spreadsheet::print_selection(std::ostream& out) const
 		if(select== nullptr) { 
 	           out<<data[i][j]<<" "; 
 		}
-		else if(select->select(data[i][j])){
-		   out<<data[i][j]<<" "; 
+		else if(select->select(this, i)){
+		   out<<data[i][j]<<" ";
 		}	  
     	}
-	out<<"\n"; 
+	if(select==nullptr || select->select(this, i)){
+	 out<<"\n"; 
+	}
    }
 }
