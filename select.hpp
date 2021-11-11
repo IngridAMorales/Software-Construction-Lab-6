@@ -2,7 +2,7 @@
 #define __SELECT_HPP__
 
 #include <cstring>
-
+#include "spreadsheet.hpp"
 class Select
 {
 public:
@@ -22,8 +22,10 @@ public:
 class Select_Column: public Select
 {
 protected:
-    int column;
+ int column;
+
 public:
+
     Select_Column(const Spreadsheet* sheet, const std::string& name)
     {
         column = sheet->get_column_by_name(name);
@@ -31,11 +33,37 @@ public:
 
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
-        return select(sheet->cell_data(row, column));
-    }
+	if (column == -1){
+        return false;
+	   }
+	else{	        
+	   return select(sheet->cell_data(row, column));
+	}    
+}
 
     // Derived classes can instead implement this simpler interface.
     virtual bool select(const std::string& s) const = 0;
+};
+
+class Select_Contains: public Select_Column{
+private:
+	std::string firstName;
+
+public:
+
+    Select_Contains (const Spreadsheet* sheet,const std::string columnName,const std::string input):Select_Column(sheet,columnName){
+	firstName = input;
+}
+   bool select(const std::string& s) const{
+	std::string str = s;
+	
+	if (str.find(firstName) != std::string::npos){
+		return true;
+}
+	else{
+	return false;
+	}	
+   }
 };
 
 #endif //__SELECT_HPP__
