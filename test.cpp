@@ -15,13 +15,33 @@ TEST(PrintTest, NullPointer) {
     EXPECT_EQ(test.str(), "Amanda Andrews 22 business \nBrian Becker 21 computer science \nCarol Conners 21 computer science \n"); 
 } 
 
+TEST(PrintTest, Select_contain) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(new Select_Contains(&sheet,"Last","Andrews"));
+    
+    std::stringstream test;
+    sheet.print_selection(test);
+
+    EXPECT_EQ(test.str(), "Amanda Andrews 22 business \n");
+}
+
+
 TEST(SelectTest, SelectContains){
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
     Select* test = new Select_Contains(&sheet,"First","Amanda");
 	bool result =  test->select(&sheet,0); 
 	EXPECT_EQ(result,true);
-	delete test;
+    delete test; 
 	
 }
+
 TEST(SelectTest, SelectContainsSubstring){
 
     Spreadsheet sheet;
