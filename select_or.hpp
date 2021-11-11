@@ -25,6 +25,10 @@ public:
 		return false;
 }	
 }
+~Select_Or(){
+        delete select1;
+	delete select2;
+}
 };
 
 

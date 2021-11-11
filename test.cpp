@@ -1,6 +1,7 @@
 #include "spreadsheet.hpp"
 #include "select.hpp"
 #include "gtest/gtest.h"
+#include "select_or.hpp"
 
 TEST(PrintTest, NullPointer) {
     Spreadsheet sheet;
@@ -27,6 +28,20 @@ TEST(PrintTest, Select_contain) {
     sheet.print_selection(test);
 
     EXPECT_EQ(test.str(), "Amanda Andrews 22 business \n");
+}
+
+TEST(PrintTest, Select_Or) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(new Select_Or(new Select_Contains(&sheet,"Last","on"),new Select_Contains(&sheet,"Age","22")));
+
+    std::stringstream test;
+    sheet.print_selection(test);
+
+    EXPECT_EQ(test.str(), "Amanda Andrews 22 business \nCarol Conners 21 computer science \n");
 }
 
 

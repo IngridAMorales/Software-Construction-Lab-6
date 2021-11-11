@@ -12,8 +12,7 @@ TEST(SelectOrTest, SelectContains){
     Select* test = new Select_Or(new Select_Contains(&sheet,"Last","on"),new Select_Contains(&sheet,"Age","22"));
 	bool result = test->select(&sheet,0);
 	EXPECT_EQ(result,true);
-	delete test;
-
+    delete test;
 }
 
 TEST(SelectOrTest, SelectContainsFalse){
