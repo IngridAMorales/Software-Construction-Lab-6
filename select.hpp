@@ -22,8 +22,10 @@ public:
 class Select_Column: public Select
 {
 protected:
-    int column;
+ int column;
+
 public:
+
     Select_Column(const Spreadsheet* sheet, const std::string& name)
     {
         column = sheet->get_column_by_name(name);
@@ -31,8 +33,13 @@ public:
 
     virtual bool select(const Spreadsheet* sheet, int row) const
     {
-        return select(sheet->cell_data(row, column));
-    }
+	if (column == -1){
+        return false;
+	   }
+	else{	        
+	   return select(sheet->cell_data(row, column));
+	}    
+}
 
     // Derived classes can instead implement this simpler interface.
     virtual bool select(const std::string& s) const = 0;
@@ -41,24 +48,23 @@ public:
 class Select_Contains: public Select_Column{
 private:
 	std::string firstName;
-	int column;	
 
 public:
+
     Select_Contains (const Spreadsheet* sheet,const std::string columnName,const std::string input):Select_Column(sheet,columnName){
 	firstName = input;
-	column = sheet->get_column_by_name(columnName);	
 }
    bool select(const std::string& s) const{
 	std::string str = s;
-	bool result = false;
+	
 	if (str.find(firstName) != std::string::npos){
-		result = true;
+		return true;
 }
 	else{
-	result = false;
+	return false;
 	}	
-return result;
-   }		
+   }
+		
 };
 
 #endif //__SELECT_HPP__
