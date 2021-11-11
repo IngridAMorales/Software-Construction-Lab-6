@@ -1,5 +1,7 @@
 #include "spreadsheet.hpp"
 #include "select.hpp"
+#include "select_not.hpp"
+#include "select_and.hpp"
 #include "gtest/gtest.h"
 
 TEST(PrintTest, NullPointer) {
@@ -28,8 +30,32 @@ TEST(PrintTest, Select_contain) {
 
     EXPECT_EQ(test.str(), "Amanda Andrews 22 business \n");
 }
+TEST(PrintTest, SelectNot) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(new Select_Not(new Select_Contains(&sheet,"Last","Andrews")));
 
+    std::stringstream test;
+    sheet.print_selection(test);
 
+    EXPECT_EQ(test.str(), "Brian Becker 21 computer science \nCarol Conners 21 computer science \n");
+}
+TEST(PrintTest, SelectAndSelectNot) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(new Select_And(new Select_Contains(&sheet, "Age", "21"),new Select_Not(new Select_Contains(&sheet,"Last","Andrews"))));
+
+    std::stringstream test;
+    sheet.print_selection(test);
+
+    EXPECT_EQ(test.str(),"Brian Becker 21 computer science \nCarol Conners 21 computer science \n");
+}
 TEST(SelectTest, SelectContains){
     Spreadsheet sheet;
     sheet.set_column_names({"First","Last","Age","Major"});
