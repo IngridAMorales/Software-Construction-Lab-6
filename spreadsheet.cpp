@@ -45,7 +45,11 @@ void Spreadsheet::print_selection(std::ostream& out) const
     for(int i = 0; i<data.size(); i++) {
 	for(int j= 0; j < data[i].size(); j++){
 		if(select== nullptr) { 
-	           out<<data[i][j]<<" "; }
+	           out<<data[i][j]<<" "; 
+		}
+		else if(select->select(data[i][j])){
+		   out<<data[i][j]<<" "; 
+		}	  
     	}
 	out<<"\n"; 
    }
