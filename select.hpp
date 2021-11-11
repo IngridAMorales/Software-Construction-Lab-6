@@ -41,14 +41,14 @@ public:
 class Select_Contains: public Select_Column{
 private:
 	std::string firstName;
-	int column;
+	int column;	
 
 public:
-    Select_Contains (const Spreadsheet* sheet,const std::string columnName,const std::string input){
+    Select_Contains (const Spreadsheet* sheet,const std::string columnName,const std::string input):Select_Column(sheet,columnName){
 	firstName = input;
 	column = sheet->get_column_by_name(columnName);	
 }
- 	bool select(const std::string& s) const override{
+   bool select(const std::string& s) const{
 	std::string str = s;
 	bool result = false;
 	if (str.find(firstName) != std::string::npos){
