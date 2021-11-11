@@ -54,7 +54,7 @@ public:
     Select_Contains (const Spreadsheet* sheet,const std::string columnName,const std::string input):Select_Column(sheet,columnName){
 	firstName = input;
 }
-   bool select(const std::string& s) const{
+   virtual bool select(const std::string& s) const{
 	std::string str = s;
 	
 	if (str.find(firstName) != std::string::npos){
@@ -64,6 +64,7 @@ public:
 	return false;
 	}	
    }
+    
 };
 
 #endif //__SELECT_HPP__
