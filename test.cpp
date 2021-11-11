@@ -2,6 +2,7 @@
 #include "select.hpp"
 #include "gtest/gtest.h"
 #include "select_or.hpp"
+#include "select_and.hpp"
 
 TEST(PrintTest, NullPointer) {
     Spreadsheet sheet;
@@ -36,7 +37,26 @@ TEST(PrintTest, Select_Or) {
     sheet.add_row({"Amanda","Andrews","22","business"});
     sheet.add_row({"Brian","Becker","21","computer science"});
     sheet.add_row({"Carol","Conners","21","computer science"});
-    sheet.set_selection(new Select_Or(new Select_Contains(&sheet,"Last","on"),new Select_Contains(&sheet,"Age","22")));
+    sheet.set_selection(new Select_Or(new Select_Contains(&sheet,"Last","on"),new Select_Contains(&sheet,"Age","21")));
+
+    std::stringstream test;
+    sheet.print_selection(test);
+
+    EXPECT_EQ(test.str(), "Brian Becker 21 computer science \nCarol Conners 21 computer science \n");
+}
+
+TEST(PrintTest, Select_OrLong) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(
+    new Select_Or(
+            new Select_Contains(&sheet,"First","Amanda"),
+              new Select_Or(
+                 new Select_Contains(&sheet,"Last","on"),
+                   new Select_Contains(&sheet,"Age","9"))));
 
     std::stringstream test;
     sheet.print_selection(test);
@@ -44,6 +64,34 @@ TEST(PrintTest, Select_Or) {
     EXPECT_EQ(test.str(), "Amanda Andrews 22 business \nCarol Conners 21 computer science \n");
 }
 
+
+TEST(PrintTest, Select_And) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(new Select_And(new Select_Contains(&sheet,"Last","on"),new Select_Contains(&sheet,"Age","21")));
+
+    std::stringstream test;
+    sheet.print_selection(test);
+
+    EXPECT_EQ(test.str(), "Carol Conners 21 computer science \n");
+}
+
+TEST(PrintTest, Select_AndFalse) {
+    Spreadsheet sheet;
+    sheet.set_column_names({"First","Last","Age","Major"});
+    sheet.add_row({"Amanda","Andrews","22","business"});
+    sheet.add_row({"Brian","Becker","21","computer science"});
+    sheet.add_row({"Carol","Conners","21","computer science"});
+    sheet.set_selection(new Select_And(new Select_Contains(&sheet,"Last","on"),new Select_Contains(&sheet,"Age","20")));
+
+    std::stringstream test;
+    sheet.print_selection(test);
+
+    EXPECT_EQ(test.str(), "");
+}
 
 TEST(SelectTest, SelectContains){
     Spreadsheet sheet;
